@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        input, textarea{
+            display: block;
+            margin: 20px 0;
+            padding: 10px;
+            min-width: 30%;
+        }
+        input[type="submit"]{
+            background-color: brown;
+            color: white;
+            min-width: 20%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    
+    <form action="">
+        <input type="text" name="tituloCurso" placeholder="Titulo Curso">
+        <textarea name="textoCurso" placeholder="Texto Curso">
+
+        </textarea>
+        <input type="text" name="imgCurso" placeholder="Nombre Imagen">
+        <input type="submit" value="Insertar datos">
+    </form>
+    
+    <button>cargar</button>
+    <ul>
+
+    </ul>
+
+    <script>
+        
+        const boton = document.querySelector("button");
+        let url = "datos.php";
+        const ul = document.querySelector("ul");
+        const form = document.forms[0];
+        console.log(form);
+
+        form.addEventListener("submit",(e)=>{
+            e.preventDefault();
+            let formdata = new FormData(form);
+            insertarDatos(formdata);
+        })
+
+        function insertarDatos(datosForm) {
+            fetch("insertar.php",{
+                method: "POST",
+                headers:{
+                    'Authorization':'Bearer 0123456789'
+                },
+                body: datosForm
+            })
+            .then(respuesta=>respuesta.json())
+            .then(datos=>{
+                if (datos == "OK") {
+                    cargarDatos();
+                }
+            })
+
+        }
+
+        function cargarDatos() {
+            ul.innerHTML="";
+            fetch(url)
+            .then(respuesta=>respuesta.json())
+            .then(datos=>{
+                console.log(datos);
+                datos.forEach(dato => {
+                    ul.innerHTML+=`<li>${dato.tituloCurso}</li>`;
+                });
+            })
+        }
+
+        boton.addEventListener("click",()=>{
+            cargarDatos();
+        })
+    </script>
+
+</body>
+</html>
